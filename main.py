@@ -67,7 +67,7 @@ if __name__ == "__main__":
     FACE_MEDEL_PATH = './20180402-114759/20180402-114759.pb'
     face_embedding = FaceEmbedding(FACE_MEDEL_PATH)
 
-    fp = FontProperties(fname='C:\\WINDOWS\\Fonts\\YuGothM.ttc', size=10)
+    fp = FontProperties(fname='./fonts/YuGothM.ttc', size=10)
 
     types = ['jpg', 'png', 'gif']
     faces_image_paths = []
