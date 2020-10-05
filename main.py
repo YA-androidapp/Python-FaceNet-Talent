@@ -5,7 +5,7 @@ from facenet.src import facenet
 from matplotlib.font_manager import FontProperties
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from PIL import Image
-from scipy.cluster.hierarchy import linkage, dendrogram
+from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import glob
@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     for (i, j, k) in zip(x, y, basenames):
         plt.annotate(k, xy=(i, j), fontproperties=fp)
-    plt.title("散布図")
+    plt.title("散布図", fontproperties=fp)
     plt.colorbar()
     plt.show()
 
@@ -146,4 +146,10 @@ if __name__ == "__main__":
     dendrogram(result, labels=basenames, leaf_rotation=30)
     plt.title("デンドログラム")
     plt.ylabel("閾値")
+    plt.subplots_adjust(bottom=0.4)
     plt.show()
+
+    for cluster_count in range(2, K+1):
+        clusters = fcluster(result, t=cluster_count, criterion='maxclust')
+        for i, c in enumerate(clusters):
+            print('\t{}\t{}\t{}'.format(cluster_count, i, c))
