@@ -152,4 +152,5 @@ if __name__ == "__main__":
     for cluster_count in range(2, K+1):
         clusters = fcluster(result, t=cluster_count, criterion='maxclust')
         for i, c in enumerate(clusters):
-            print('\t{}\t{}\t{}'.format(cluster_count, i, c))
+            print('\t{}\t{}\t{}\t{}'.format(cluster_count, i, basenames[i], c))
+        print('')
