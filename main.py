@@ -8,6 +8,7 @@ from PIL import Image
 from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+import datetime
 import glob
 import matplotlib.pyplot as plt
 import numpy as np
@@ -53,6 +54,16 @@ class FaceEmbedding(object):
 
 
 if __name__ == "__main__":
+    currentdirectory = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(currentdirectory)
+    print(os.getcwd())
+    os.makedirs(
+        os.path.join(currentdirectory, 'data'),
+        exist_ok=True
+        )
+    DATA_FILEPATH = os.path.join(
+        currentdirectory, 'data', 'dat_' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.tsv')
+
     FACE_MEDEL_PATH = './20180402-114759/20180402-114759.pb'
     face_embedding = FaceEmbedding(FACE_MEDEL_PATH)
 
@@ -72,7 +83,8 @@ if __name__ == "__main__":
     )
 
     basenames = [
-        ((os.path.splitext(os.path.basename(f))[0]).split('-'))[0]
+        # 人名＋接尾辞の1文字（plotへ収めるためにトリミング）
+        ((os.path.splitext(os.path.basename(f))[0]).split('_'))[0] + (((os.path.splitext(os.path.basename(f))[0]).split('_'))[1])[0]
         for f in faces_image_paths]
     print(len(basenames))
 
@@ -149,8 +161,13 @@ if __name__ == "__main__":
     plt.subplots_adjust(bottom=0.4)
     plt.show()
 
-    for cluster_count in range(2, K+1):
-        clusters = fcluster(result, t=cluster_count, criterion='maxclust')
-        for i, c in enumerate(clusters):
-            print('\t{}\t{}\t{}\t{}'.format(cluster_count, i, basenames[i], c))
-        print('')
+
+    with open(DATA_FILEPATH, 'a', encoding='utf-8') as datafile:
+        print('{}\t{}\t{}\t{}'.format(
+            'K', 'i', 'l', 'clus'), file=datafile, flush=True)
+
+        for cluster_count in range(2, K+1):
+            clusters = fcluster(result, t=cluster_count, criterion='maxclust')
+            for i, c in enumerate(clusters):
+                print('{}\t{}\t{}\t{}'.format(cluster_count, i, basenames[i], c), file=datafile, flush=True)
+            print('')

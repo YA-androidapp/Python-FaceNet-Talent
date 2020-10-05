@@ -1,6 +1,8 @@
 20180402-114759/*
+data/
 facenet/*
 images/*
+images.bak
 myenv/*
 
 # Byte-compiled / optimized / DLL files
