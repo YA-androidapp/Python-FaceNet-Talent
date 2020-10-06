@@ -168,11 +168,17 @@ if __name__ == "__main__":
 
     with open(DATA_FILEPATH, 'a', encoding='utf-8') as datafile:
         print('{}\t{}\t{}\t{}'.format(
-            'K', 'i', 'l', 'clus'), file=datafile, flush=True)
+            'K', 'i', 'filename', 'clus'), file=datafile, flush=True)
 
-        for cluster_count in range(2, K+1):
+        # for cluster_count in range(2, K+1):
+        for cluster_count in [2,4,16,64]:
             clusters = fcluster(result, t=cluster_count, criterion='maxclust')
             for i, c in enumerate(clusters):
-                print('{}\t{}\t{}\t{}'.format(cluster_count, i,
-                                              basenames[i], c), file=datafile, flush=True)
+                print(
+                    '{}\t{}\t{}\t{}'.format(
+                        cluster_count, i, basenames[i], c
+                    ),
+                    file=datafile,
+                    flush=True
+                )
             print('')
