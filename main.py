@@ -60,7 +60,7 @@ if __name__ == "__main__":
     os.makedirs(
         os.path.join(currentdirectory, 'data'),
         exist_ok=True
-        )
+    )
     DATA_FILEPATH = os.path.join(
         currentdirectory, 'data', 'dat_' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.tsv')
 
@@ -83,8 +83,13 @@ if __name__ == "__main__":
     )
 
     basenames = [
+        # 人名＋接尾辞
+        os.path.basename(f)
+        for f in faces_image_paths]
+    labels = [
         # 人名＋接尾辞の1文字（plotへ収めるためにトリミング）
-        ((os.path.splitext(os.path.basename(f))[0]).split('_'))[0] + (((os.path.splitext(os.path.basename(f))[0]).split('_'))[1])[0]
+        ((os.path.splitext(os.path.basename(f))[0]).split('_'))[
+            0] + (((os.path.splitext(os.path.basename(f))[0]).split('_'))[1])[0]
         for f in faces_image_paths]
     print(len(basenames))
 
@@ -119,7 +124,7 @@ if __name__ == "__main__":
 
     # ##########
 
-    K = 4
+    K = 8
     kmeans = KMeans(n_clusters=K).fit(reduced)
     pred_label = kmeans.predict(reduced)
     print(len(pred_label))
@@ -129,7 +134,7 @@ if __name__ == "__main__":
     y = reduced[:, 1]
     plt.scatter(x, y, c=pred_label)
 
-    for (i, j, k) in zip(x, y, basenames):
+    for (i, j, k) in zip(x, y, labels):
         plt.annotate(k, xy=(i, j), fontproperties=fp)
     plt.title("散布図", fontproperties=fp)
     plt.colorbar()
@@ -155,12 +160,11 @@ if __name__ == "__main__":
         # method='weighted'
     )
     print(result)
-    dendrogram(result, labels=basenames, leaf_rotation=30)
+    dendrogram(result, labels=labels, leaf_rotation=30)
     plt.title("デンドログラム")
     plt.ylabel("閾値")
     plt.subplots_adjust(bottom=0.4)
     plt.show()
-
 
     with open(DATA_FILEPATH, 'a', encoding='utf-8') as datafile:
         print('{}\t{}\t{}\t{}'.format(
@@ -169,5 +173,6 @@ if __name__ == "__main__":
         for cluster_count in range(2, K+1):
             clusters = fcluster(result, t=cluster_count, criterion='maxclust')
             for i, c in enumerate(clusters):
-                print('{}\t{}\t{}\t{}'.format(cluster_count, i, basenames[i], c), file=datafile, flush=True)
+                print('{}\t{}\t{}\t{}'.format(cluster_count, i,
+                                              basenames[i], c), file=datafile, flush=True)
             print('')
