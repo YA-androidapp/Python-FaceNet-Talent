@@ -171,7 +171,8 @@ if __name__ == "__main__":
             'K', 'i', 'filename', 'clus'), file=datafile, flush=True)
 
         # for cluster_count in range(2, K+1):
-        for cluster_count in [2,4,16,64]:
+        # for cluster_count in [2,4,16,64]:
+        for cluster_count in [2,4,8,16,32,64,128.256,512,1024,2048,4096,8192,16384]:
             clusters = fcluster(result, t=cluster_count, criterion='maxclust')
             for i, c in enumerate(clusters):
                 print(
