@@ -11,6 +11,7 @@ from sklearn.decomposition import PCA
 import datetime
 import glob
 import matplotlib.pyplot as plt
+import math
 import numpy as np
 import os
 import pandas as pd
@@ -52,6 +53,10 @@ class FaceEmbedding(object):
         embeddings = self.sess.run(self.embeddings, feed_dict=feed_dict)
         return embeddings
 
+
+def get_cluster_counts(nrow):
+    log2 = math.ceil(math.log2(nrow))+1
+    return [2 ** i for i in list(range(2, log2))]
 
 if __name__ == "__main__":
     currentdirectory = os.path.dirname(os.path.abspath(__file__))
@@ -170,9 +175,8 @@ if __name__ == "__main__":
         print('{}\t{}\t{}\t{}'.format(
             'K', 'i', 'filename', 'clus'), file=datafile, flush=True)
 
-        # for cluster_count in range(2, K+1):
-        # for cluster_count in [2,4,16,64]:
-        for cluster_count in [2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384]:
+        cluster_counts = get_cluster_counts(features.shape[0])
+        for cluster_count in cluster_counts:
             clusters = fcluster(result, t=cluster_count, criterion='maxclust')
             for i, c in enumerate(clusters):
                 print(
